@@ -1,21 +1,34 @@
 #!/usr/bin/python
-from bs4 import BeautifulSoup as bs
 import requests
-import string
+import sqlite3
+from bs4 import BeautifulSoup as bs
+
+from music_styles import Music_style as ms
 
 
-def get_page_content(link):
-    page = requests.get(link, timeout=5)
+__ROOT_LINK__ = 'https://www.cifraclub.com.br/'
+
+# returns the html from this url
+def get_page_content(url):
+    page = requests.get(url, timeout=5)
     return bs(page.content, "html.parser")  # parse the url content
 
 
+# Tries to find js-sng_list at this url
+def get_best_music_list(url):
+    page_content = get_page_content(url)
+    if page_content:
+        song_list = page_content.find(id="js-sng_list")  # find the song list
+        # Find all href inside a song list
+        all_links_songs = [a['href'] for a in song_list.find_all('a', href=True) if a.text]
+
+        music_style = url.split("/")[-1]  # get only the style from url
+        return music_style, all_links_songs
+
+
 def main():
-    root_link = 'https://www.catho.com.br/profissoes/cargo/'
-    letters = string.ascii_lowercase  # all the letters from 'a' to 'z'
-
-    for letter in letters:
-        page_content = get_page_content('{}'.format(letter))
-
+    # letters = string.ascii_lowercase  # all the letters from 'a' to 'z'
+    links = map(get_best_music_list, ["{}mais-acessadas/{}".format(__ROOT_LINK__, style.value) for style in ms])
 
 
 if __name__ == "__main__":
