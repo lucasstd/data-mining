@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as bs
 from music_styles import Music_style as ms
 
 
-__ROOT_LINK__ = 'https://www.cifraclub.com.br/'
+__ROOT_LINK = 'https://www.cifraclub.com.br/'
 
 # returns the html from this url
 def get_page_content(url):
@@ -28,7 +28,7 @@ def get_best_music_list(url):
 
 def main():
     # letters = string.ascii_lowercase  # all the letters from 'a' to 'z'
-    links = map(get_best_music_list, ["{}mais-acessadas/{}".format(__ROOT_LINK__, style.value) for style in ms])
+    links = map(get_best_music_list, ["{}mais-acessadas/{}".format(__ROOT_LINK, style.value) for style in ms])
 
 
 if __name__ == "__main__":
